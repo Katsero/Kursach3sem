@@ -1,0 +1,35 @@
+<!-- carsite/templates/home.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Авто.ру — Новости и объявления</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'carsite:home' %}">Главная</a> |
+        <a href="{% url 'carsite:car_list' %}">Объявления</a> |
+        <a href="{% url 'carsite:news_list' %}">Новости</a>
+        {% if user.is_authenticated %}
+            | Привет, {{ user.username }}!
+            <a href="{% url 'carsite:logout' %}">Выйти</a>
+        {% else %}
+            | <a href="{% url 'carsite:login' %}">Войти</a>
+            <a href="{% url 'carsite:register' %}">Регистрация</a>
+        {% endif %}
+    </nav>
+
+    <h1>Добро пожаловать на Авто.ру!</h1>
+    <p>Сайт об автомобилях: новости, объявления, общение.</p>
+    <ul>
+        <li><a href="{% url 'carsite:car_list' %}">Посмотреть все объявления</a></li>
+        <li><a href="{% url 'carsite:news_list' %}">Читать последние новости</a></li>
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'carsite:car_create' %}">Добавить объявление</a></li>
+        {% endif %}
+        {% if user.is_authenticated and user.role == 'moderator' %}
+            <li><a href="{% url 'carsite:news_create' %}">Написать новость</a></li>
+        {% endif %}
+    </ul>
+</body>
+</html>

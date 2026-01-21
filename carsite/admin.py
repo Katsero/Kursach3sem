@@ -1,6 +1,15 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from import_export.admin import ImportExportModelAdmin
+from import_export import resources
 from .models import User, Brand, Model, Car, CarImage, Favorite, News, Comment
+
+
+class CarResource(resources.ModelResource):
+    class Meta:
+        model = Car
+        fields = ('id', 'user__username', 'model__brand__name', 'model__name', 'price', 'year', 'status', 'created_at')
+        export_order = ('id', 'user__username', 'model__brand__name', 'model__name', 'price', 'year', 'status', 'created_at')
 
 
 class CarImageInline(admin.TabularInline):
@@ -11,7 +20,8 @@ class CarImageInline(admin.TabularInline):
 
 
 @admin.register(Car)
-class CarAdmin(admin.ModelAdmin):
+class CarAdmin(ImportExportModelAdmin):
+    resource_class = CarResource
     list_display = ['id', 'model', 'price_rub', 'year', 'status_badge', 'owner_link', 'created_at']
     list_display_links = ['id', 'model']
     list_filter = ['status', 'year', 'created_at', 'model__brand']
