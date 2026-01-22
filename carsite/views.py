@@ -15,10 +15,10 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Car, News, Comment
 from .serializers import CarSerializer, NewsSerializer
 from .forms import SignUpForm
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 # === HTML Views ===
-
 class HomeView(TemplateView):
     """Главная страница сайта."""
     template_name = 'home.html'
@@ -41,7 +41,7 @@ class CarListView(ListView):
     template_name = 'car_list.html'
     context_object_name = 'car_list'
     ordering = ['-created_at']
-
+    paginate_by = 5 
 
 class CarDetailView(DetailView):
     model = Car

@@ -31,6 +31,15 @@ class CarAdmin(ImportExportModelAdmin):
     inlines = [CarImageInline]
     readonly_fields = ['created_at', 'updated_at']
 
+    def get_import_resource_kwargs(self, request, *args, **kwargs):
+        return {
+            'fields': ('id', 'user__username', 'model__brand__name', 'model__name', 'price', 'year', 'status', 'created_at'),
+            'import_id_fields': ('id',), 
+        }
+
+    def import_action(self, request, *args, **kwargs):
+        return super().import_action(request, *args, **kwargs)
+
     @admin.display(description='Цена')
     def price_rub(self, obj):
         return f"{obj.price:,} ₽".replace(',', ' ')
