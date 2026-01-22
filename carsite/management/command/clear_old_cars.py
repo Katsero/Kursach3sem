@@ -1,4 +1,3 @@
-# carsite/management/commands/clear_old_cars.py
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
@@ -13,3 +12,5 @@ class Command(BaseCommand):
         )
         count = old_cars.delete()[0]
         self.stdout.write(f"Удалено {count} старых объявлений")
+
+# Не работает

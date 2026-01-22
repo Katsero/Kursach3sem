@@ -79,10 +79,8 @@ class CarDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('carsite:car_list')
 
     def get_queryset(self):
-        # Модератор может удалять все объявления
         if self.request.user.role == 'moderator':
             return Car.objects.all()
-        # Обычный пользователь — только свои
         return Car.objects.filter(user=self.request.user)
 
 
@@ -122,7 +120,6 @@ class NewsCreateView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
     def dispatch(self, request, *args, **kwargs):
-        # Только модератор может создавать новости
         if not request.user.is_authenticated or request.user.role != 'moderator':
             return redirect('carsite:news_list')
         return super().dispatch(request, *args, **kwargs)
@@ -135,10 +132,8 @@ class NewsUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('carsite:news_list')
 
     def get_queryset(self):
-        # Модератор может редактировать все новости
         if self.request.user.role == 'moderator':
             return News.objects.all()
-        # Обычный пользователь — только свои
         return News.objects.filter(author=self.request.user)
 
 
@@ -148,10 +143,8 @@ class NewsDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('carsite:news_list')
 
     def get_queryset(self):
-        # Модератор может удалять все новости
         if self.request.user.role == 'moderator':
             return News.objects.all()
-        # Обычный пользователь — только свои
         return News.objects.filter(author=self.request.user)
 
 
@@ -169,17 +162,14 @@ class AddCommentView(LoginRequiredMixin, View):
 class CommentDeleteView(LoginRequiredMixin, DeleteView):
     model = Comment
     template_name = 'comment_confirm_delete.html'
-    success_url = reverse_lazy('carsite:news_detail')  # Укажите правильный URL
+    success_url = reverse_lazy('carsite:news_detail') 
 
     def get_success_url(self):
-        # Перенаправляем на детальную страницу новости
         return reverse_lazy('carsite:news_detail', kwargs={'pk': self.object.news.pk})
 
     def get_queryset(self):
-        # Модератор может удалять любые комментарии
         if self.request.user.role == 'moderator':
             return Comment.objects.all()
-        # Обычный пользователь — только свои
         return Comment.objects.filter(user=self.request.user)
 
 

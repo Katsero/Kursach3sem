@@ -1,4 +1,3 @@
-<!-- carsite/templates/car_list.html -->
 {% extends 'base.html' %}
 
 {% block title %}Объявления{% endblock %}
@@ -26,16 +25,13 @@
     <p>Нет объявлений.</p>
 {% endif %}
 
-<!-- Навигация по страницам -->
 <div class="pagination">
     <span class="page-links">
-        <!-- Страница 1 -->
         {% if page_obj.has_previous %}
             <a href="?page=1">&laquo; Первая</a>
             <a href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
         {% endif %}
 
-        <!-- Номера страниц -->
         <span class="current">
             {% for num in page_obj.paginator.page_range %}
                 {% if page_obj.number == num %}
@@ -46,7 +42,6 @@
             {% endfor %}
         </span>
 
-        <!-- Последняя страница -->
         {% if page_obj.has_next %}
             <a href="?page={{ page_obj.next_page_number }}">Следующая</a>
             <a href="?page={{ page_obj.paginator.num_pages }}">Последняя &raquo;</a>
