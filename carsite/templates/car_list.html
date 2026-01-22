@@ -1,33 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Объявления</title>
-</head>
-<body>
-    <h1>Все объявления</h1>
+{% extends 'base.html' %}
 
-    {% if car_list %}
-        <ul>
-            {% for car in car_list %}
-                <li>
-                    <a href="{% url 'carsite:car_detail' car.id %}">
-                        {{ car }}
-                    </a>
-                    {% if user.is_authenticated %}
-                        {% if user == car.user or user.role == 'moderator' %}
-                            | <a href="{% url 'carsite:car_edit' car.id %}">Редактировать</a>
-                            | <a href="{% url 'carsite:car_delete' car.id %}">Удалить</a>
-                        {% endif %}
+{% block title %}Объявления{% endblock %}
+
+{% block content %}
+<h1>Все объявления</h1>
+
+{% if car_list %}
+    <ul>
+        {% for car in car_list %}
+            <li>
+                <a href="{% url 'carsite:car_detail' car.id %}">
+                    {{ car }}
+                </a>
+                {% if user.is_authenticated %}
+                    {% if user == car.user or user.role == 'moderator' %}
+                        | <a href="{% url 'carsite:car_edit' car.id %}">Редактировать</a>
+                        | <a href="{% url 'carsite:car_delete' car.id %}">Удалить</a>
                     {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Нет объявлений.</p>
-    {% endif %}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Нет объявлений.</p>
+{% endif %}
 
-    {% if user.is_authenticated %}
-        <p><a href="{% url 'carsite:car_create' %}">Добавить объявление</a></p>
-    {% endif %}
-</body>
-</html>
+{% if user.is_authenticated %}
+    <p><a href="{% url 'carsite:car_create' %}">Добавить объявление</a></p>
+{% endif %}
+{% endblock %}

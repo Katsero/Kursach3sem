@@ -1,3 +1,10 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {% if car %}Редактировать объявление{% else %}Добавить объявление{% endif %}
+{% endblock %}
+
+{% block content %}
 <h1>{% if car %}Редактировать объявление{% else %}Добавить объявление{% endif %}</h1>
 
 <form method="post">
@@ -7,3 +14,4 @@
 </form>
 
 <a href="{% url 'carsite:car_list' %}">Отмена</a>
+{% endblock %}

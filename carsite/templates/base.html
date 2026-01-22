@@ -1,0 +1,30 @@
+<!-- carsite/templates/base.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Автокуп — Новости и объявления{% endblock %}</title>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'carsite:home' %}">Главная</a> |
+        <a href="{% url 'carsite:car_list' %}">Объявления</a> |
+        <a href="{% url 'carsite:news_list' %}">Новости</a>
+        {% if user.is_authenticated %}
+            | Привет, {{ user.username }}!
+            <!-- ИСПРАВЛЕНО: Форма с POST-запросом для выхода -->
+            <form method="post" action="{% url 'carsite:logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="background: none; border: none; cursor: pointer; text-decoration: underline;">Выйти</button>
+            </form>
+        {% else %}
+            | <a href="{% url 'carsite:login' %}">Войти</a>
+            <a href="{% url 'carsite:register' %}">Регистрация</a>
+        {% endif %}
+    </nav>
+
+    {% block content %}
+    <!-- Содержимое страницы будет здесь -->
+    {% endblock %}
+</body>
+</html>

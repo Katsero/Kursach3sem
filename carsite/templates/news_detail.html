@@ -1,73 +1,51 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ news.title }} - Новости</title>
-</head>
-<body>
-    <header>
-        <h1>Автообъявления</h1>
-        <nav>
-            {% if user.is_authenticated %}
-                <span>Привет, {{ user.username }}!</span>
-                <a href="{% url 'carsite:car_list' %}">Объявления</a>
-                <a href="{% url 'carsite:car_create' %}">Добавить объявление</a>
-                <a href="{% url 'carsite:news_list' %}">Новости</a>
-                <a href="{% url 'logout' %}">Выход</a>
-            {% else %}
-                <a href="{% url 'login' %}">Вход</a>
-                <a href="{% url 'register' %}">Регистрация</a>
-                <a href="{% url 'carsite:car_list' %}">Объявления</a>
-                <a href="{% url 'carsite:news_list' %}">Новости</a>
-            {% endif %}
-        </nav>
-    </header>
+<!-- carsite/templates/news_detail.html -->
+{% extends 'base.html' %}
 
-    <main>
-        <article>
-            <h2>{{ news.title }}</h2>
-            {% if news.cover_image %}
-                <img src="{{ news.cover_image.url }}" alt="Обложка новости" style="max-width: 100%; height: auto;">
-            {% endif %}
-            <div>
-                {{ news.content }}
-            </div>
-            <small>Автор: {{ news.author }} | Опубликовано: {{ news.published_at|date:"d.m.Y H:i" }}</small>
-        </article>
+{% block title %}{{ news.title }} - Новости{% endblock %}
 
-        <section>
-            <h3>Комментарии ({{ news.comments.count }})</h3>
+{% block content %}
+<article>
+    <h2>{{ news.title }}</h2>
+    {% if news.cover_image %}
+        <img src="{{ news.cover_image.url }}" alt="Обложка новости" style="max-width: 100%; height: auto;">
+    {% endif %}
+    <div>
+        {{ news.content }}
+    </div>
+    <small>Автор: {{ news.author }} | Опубликовано: {{ news.published_at|date:"d.m.Y H:i" }}</small>
+</article>
 
-            {% if user.is_authenticated %}
-                <form method="post" action="{% url 'carsite:news_comment' news.id %}">
-                    {% csrf_token %}
-                    <label for="id_text">Ваш комментарий:</label>
-                    <textarea name="text" id="id_text" required></textarea>
-                    <button type="submit">Оставить комментарий</button>
-                </form>
-            {% else %}
-                <p>Чтобы оставить комментарий, <a href="{% url 'login' %}">войдите</a> или <a href="{% url 'register' %}">зарегистрируйтесь</a>.</p>
-            {% endif %}
+<section>
+    <h3>Комментарии ({{ news.comments.count }})</h3>
 
-            {% if news.comments %}
-                <ul>
-                    {% for comment in news.comments.all %}
-                        <li>
-                            <strong>{{ comment.user.username }}</strong> ({{ comment.created_at|date:"d.m.Y H:i" }}):
-                            <p>{{ comment.text }}</p>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>Пока нет комментариев.</p>
-            {% endif %}
-        </section>
+    {% if user.is_authenticated %}
+        <form method="post" action="{% url 'carsite:news_comment' news.id %}">
+            {% csrf_token %}
+            <label for="id_text">Ваш комментарий:</label>
+            <textarea name="text" id="id_text" required></textarea>
+            <button type="submit">Оставить комментарий</button>
+        </form>
+    {% else %}
+        <p>Чтобы оставить комментарий, <a href="{% url 'carsite:login' %}">войдите</a> или <a href="{% url 'carsite:register' %}">зарегистрируйтесь</a>.</p>
+    {% endif %}
 
-        <a href="{% url 'carsite:news_list' %}">Назад к новостям</a>
-    </main>
+    {% if news.comments %}
+        <ul>
+            {% for comment in news.comments.all %}
+                <li>
+                    <strong>{{ comment.user.username }}</strong> ({{ comment.created_at|date:"d.m.Y H:i" }}):
+                    <p>{{ comment.text }}</p>
+                    <!-- Ссылка "Удалить" для модератора -->
+                    {% if user.is_authenticated and user.role == 'moderator' %}
+                        | <a href="{% url 'carsite:comment_delete' news.pk comment.pk %}">Удалить</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Пока нет комментариев.</p>
+    {% endif %}
+</section>
 
-    <footer>
-        <p>&copy; 2026 Автообъявления. Все права защищены.</p>
-    </footer>
-</body>
-</html>
+<a href="{% url 'carsite:news_list' %}">Назад к новостям</a>
+{% endblock %}

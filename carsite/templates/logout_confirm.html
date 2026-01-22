@@ -1,0 +1,15 @@
+<!-- carsite/templates/registration/logout_confirm.html -->
+{% extends 'base.html' %}
+
+{% block title %}Подтверждение выхода{% endblock %}
+
+{% block content %}
+    <h2>Вы уверены, что хотите выйти?</h2>
+    <p>Это действие приведет к завершению вашей текущей сессии.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Да, выйти</button>
+        <a href="{% url 'carsite:home' %}" style="margin-left: 10px;">Отмена</a>
+    </form>
+{% endblock %}

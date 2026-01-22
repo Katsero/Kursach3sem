@@ -8,8 +8,8 @@ app_name = 'carsite'
 
 # API Router
 router = DefaultRouter()
-router.register(r'api/cars', views.CarViewSet)
-router.register(r'api/news', views.NewsViewSet)
+router.register(r'cars', views.CarViewSet)  # Убран префикс 'api/'
+router.register(r'news', views.NewsViewSet) # Убран префикс 'api/'
 
 urlpatterns = [
     # Главная страница
@@ -29,6 +29,7 @@ urlpatterns = [
     path('news/<int:pk>/edit/', views.NewsUpdateView.as_view(), name='news_edit'),
     path('news/<int:pk>/delete/', views.NewsDeleteView.as_view(), name='news_delete'),
     path('news/<int:pk>/comment/', views.AddCommentView.as_view(), name='news_comment'),
+    path('news/<int:news_pk>/comment/<int:pk>/delete/', views.CommentDeleteView.as_view(), name='comment_delete'),
 
     # Регистрация
     path('accounts/register/', views.RegisterView.as_view(), name='register'),
@@ -48,5 +49,5 @@ urlpatterns += [
 
 # === API URLs ===
 urlpatterns += [
-    path('', include(router.urls)),
+    path('api/', include(router.urls)), # Префикс 'api/' здесь
 ]

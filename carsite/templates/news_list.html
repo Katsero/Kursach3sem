@@ -1,54 +1,25 @@
-<!-- carsite/templates/news_list.html -->
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Новости</title>
-</head>
-<body>
-    <header>
-        <h1>Автообъявления</h1>
-        <nav>
-            {% if user.is_authenticated %}
-                <span>Привет, {{ user.username }}!</span>
-                <a href="{% url 'carsite:car_list' %}">Объявления</a>
-                <a href="{% url 'carsite:car_create' %}">Добавить объявление</a>
-                <a href="{% url 'carsite:news_list' %}">Новости</a>
-                <!-- Используем пространство имен 'carsite' -->
-                <a href="{% url 'carsite:logout' %}">Выход</a>
-            {% else %}
-                <a href="{% url 'carsite:login' %}">Вход</a>
-                <a href="{% url 'carsite:register' %}">Регистрация</a>
-                <a href="{% url 'carsite:car_list' %}">Объявления</a>
-                <a href="{% url 'carsite:news_list' %}">Новости</a>
-            {% endif %}
-        </nav>
-    </header>
+{% extends 'base.html' %}
 
-    <main>
-        <h2>Новости</h2>
+{% block title %}Новости{% endblock %}
 
-        {% if news_list %}
-            <ul>
-                {% for news in news_list %}
-                    <li>
-                        <h3><a href="{% url 'carsite:news_detail' news.id %}">{{ news.title }}</a></h3>
-                        <p>{{ news.content|truncatewords:50 }}</p>
-                        <small>Автор: {{ news.author }} | Опубликовано: {{ news.published_at|date:"d.m.Y H:i" }}</small>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p>Новостей пока нет.</p>
-        {% endif %}
+{% block content %}
+<h2>Новости</h2>
 
-        {% if user.is_authenticated and user.role == 'moderator' %}
-            <p><a href="{% url 'carsite:news_create' %}">Добавить новость</a></p>
-        {% endif %}
-    </main>
+{% if news_list %}
+    <ul>
+        {% for news in news_list %}
+            <li>
+                <h3><a href="{% url 'carsite:news_detail' news.id %}">{{ news.title }}</a></h3>
+                <p>{{ news.content|truncatewords:50 }}</p>
+                <small>Автор: {{ news.author }} | Опубликовано: {{ news.published_at|date:"d.m.Y H:i" }}</small>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Новостей пока нет.</p>
+{% endif %}
 
-    <footer>
-        <p>&copy; 2026 Автообъявления. Все права защищены.</p>
-    </footer>
-</body>
-</html>
+{% if user.is_authenticated and user.role == 'moderator' %}
+    <p><a href="{% url 'carsite:news_create' %}">Добавить новость</a></p>
+{% endif %}
+{% endblock %}
